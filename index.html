@@ -22,6 +22,9 @@
     <canvas id="gameCanvas" width="400" height="400"></canvas>
 
     <script>
+        // Minesweeper Game with Mouse Interaction
+
+        // Initialize the game board and variables
         const boardSize = 10; // Change this to adjust the board size
         const mineCount = 15; // Number of mines on the board
         const board = [];
@@ -80,7 +83,8 @@
         revealed[row][col] = true;
 
         if (board[row][col] === "M") {
-            console.log("Game Over! You hit a mine.");
+            alert("Game Over! You hit a mine.");
+            renderBoard();
             return;
         }
 
@@ -92,34 +96,104 @@
             }
             }
         }
+
+        renderBoard();
         };
 
-        // Render the board in the console
+        // Render the board in the DOM
         const renderBoard = () => {
-        console.clear();
+        const gameContainer = document.getElementById("game-container");
+        gameContainer.innerHTML = ""; // Clear previous board
+
         for (let i = 0; i < boardSize; i++) {
-            let row = "";
+            const rowElement = document.createElement("div");
+            rowElement.className = "row";
+
             for (let j = 0; j < boardSize; j++) {
+            const cellElement = document.createElement("div");
+            cellElement.className = "cell";
+            cellElement.dataset.row = i;
+            cellElement.dataset.col = j;
+
             if (revealed[i][j]) {
-                row += board[i][j] === 0 ? " . " : ` ${board[i][j]} `;
+                if (board[i][j] === "M") {
+                cellElement.textContent = "💣";
+                cellElement.classList.add("mine");
+                } else if (board[i][j] > 0) {
+                cellElement.textContent = board[i][j];
+                cellElement.classList.add("number");
+                } else {
+                cellElement.textContent = "";
+                cellElement.classList.add("empty");
+                }
             } else {
-                row += " X ";
+                cellElement.textContent = "";
             }
+
+            cellElement.addEventListener("click", () => {
+                revealCell(i, j);
+            });
+
+            rowElement.appendChild(cellElement);
             }
-            console.log(row);
+
+            gameContainer.appendChild(rowElement);
         }
         };
 
-        // Initialize the game and add interaction
+        // Initialize the game
         initializeBoard();
         renderBoard();
 
-        // Simulate a few moves
-        console.log("Revealing cells:");
-        revealCell(0, 0);
-        renderBoard();
-        revealCell(1, 1);
-        renderBoard();
+        // Add basic styles
+        const style = document.createElement("style");
+        style.textContent = `
+        #game-container {
+            display: grid;
+            grid-template-rows: repeat(${boardSize}, 1fr);
+            gap: 2px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(${boardSize}, 1fr);
+        }
+
+        .cell {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ccc;
+            background-color: #ddd;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .cell.mine {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .cell.number {
+            background-color: #90caf9;
+            color: black;
+        }
+
+        .cell.empty {
+            background-color: #f5f5f5;
+        }
+        `;
+
+        document.head.appendChild(style);
+
+        // Add game container to the DOM
+        const gameContainer = document.createElement("div");
+        gameContainer.id = "game-container";
+        document.body.appendChild(gameContainer);
     </script>
 </body>
 </html>
