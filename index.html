@@ -23,103 +23,103 @@
 
     <script>
         const boardSize = 10; // Change this to adjust the board size
-const mineCount = 15; // Number of mines on the board
-const board = [];
-const revealed = [];
+        const mineCount = 15; // Number of mines on the board
+        const board = [];
+        const revealed = [];
 
-// Utility function to create a random integer in a range
-const getRandomInt = (max) => Math.floor(Math.random() * max);
+        // Utility function to create a random integer in a range
+        const getRandomInt = (max) => Math.floor(Math.random() * max);
 
-// Create the game board
-const initializeBoard = () => {
-  // Initialize board with empty cells
-  for (let i = 0; i < boardSize; i++) {
-    board[i] = [];
-    revealed[i] = [];
-    for (let j = 0; j < boardSize; j++) {
-      board[i][j] = 0;
-      revealed[i][j] = false;
-    }
-  }
-
-  // Place mines randomly
-  let minesPlaced = 0;
-  while (minesPlaced < mineCount) {
-    const row = getRandomInt(boardSize);
-    const col = getRandomInt(boardSize);
-    if (board[row][col] !== "M") {
-      board[row][col] = "M";
-      minesPlaced++;
-
-      // Update numbers around the mine
-      for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-          const newRow = row + i;
-          const newCol = col + j;
-          if (
-            newRow >= 0 &&
-            newRow < boardSize &&
-            newCol >= 0 &&
-            newCol < boardSize &&
-            board[newRow][newCol] !== "M"
-          ) {
-            board[newRow][newCol]++;
-          }
+        // Create the game board
+        const initializeBoard = () => {
+        // Initialize board with empty cells
+        for (let i = 0; i < boardSize; i++) {
+            board[i] = [];
+            revealed[i] = [];
+            for (let j = 0; j < boardSize; j++) {
+            board[i][j] = 0;
+            revealed[i][j] = false;
+            }
         }
-      }
-    }
-  }
-};
 
-// Reveal a cell and handle the game logic
-const revealCell = (row, col) => {
-  if (row < 0 || row >= boardSize || col < 0 || col >= boardSize || revealed[row][col]) {
-    return;
-  }
+        // Place mines randomly
+        let minesPlaced = 0;
+        while (minesPlaced < mineCount) {
+            const row = getRandomInt(boardSize);
+            const col = getRandomInt(boardSize);
+            if (board[row][col] !== "M") {
+            board[row][col] = "M";
+            minesPlaced++;
 
-  revealed[row][col] = true;
+            // Update numbers around the mine
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                const newRow = row + i;
+                const newCol = col + j;
+                if (
+                    newRow >= 0 &&
+                    newRow < boardSize &&
+                    newCol >= 0 &&
+                    newCol < boardSize &&
+                    board[newRow][newCol] !== "M"
+                ) {
+                    board[newRow][newCol]++;
+                }
+                }
+            }
+            }
+        }
+        };
 
-  if (board[row][col] === "M") {
-    console.log("Game Over! You hit a mine.");
-    return;
-  }
+        // Reveal a cell and handle the game logic
+        const revealCell = (row, col) => {
+        if (row < 0 || row >= boardSize || col < 0 || col >= boardSize || revealed[row][col]) {
+            return;
+        }
 
-  if (board[row][col] === 0) {
-    // Reveal neighboring cells if it's empty
-    for (let i = -1; i <= 1; i++) {
-      for (let j = -1; j <= 1; j++) {
-        revealCell(row + i, col + j);
-      }
-    }
-  }
-};
+        revealed[row][col] = true;
 
-// Render the board in the console
-const renderBoard = () => {
-  console.clear();
-  for (let i = 0; i < boardSize; i++) {
-    let row = "";
-    for (let j = 0; j < boardSize; j++) {
-      if (revealed[i][j]) {
-        row += board[i][j] === 0 ? " . " : ` ${board[i][j]} `;
-      } else {
-        row += " X ";
-      }
-    }
-    console.log(row);
-  }
-};
+        if (board[row][col] === "M") {
+            console.log("Game Over! You hit a mine.");
+            return;
+        }
 
-// Initialize the game and add interaction
-initializeBoard();
-renderBoard();
+        if (board[row][col] === 0) {
+            // Reveal neighboring cells if it's empty
+            for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+                revealCell(row + i, col + j);
+            }
+            }
+        }
+        };
 
-// Simulate a few moves
-console.log("Revealing cells:");
-revealCell(0, 0);
-renderBoard();
-revealCell(1, 1);
-renderBoard();
+        // Render the board in the console
+        const renderBoard = () => {
+        console.clear();
+        for (let i = 0; i < boardSize; i++) {
+            let row = "";
+            for (let j = 0; j < boardSize; j++) {
+            if (revealed[i][j]) {
+                row += board[i][j] === 0 ? " . " : ` ${board[i][j]} `;
+            } else {
+                row += " X ";
+            }
+            }
+            console.log(row);
+        }
+        };
+
+        // Initialize the game and add interaction
+        initializeBoard();
+        renderBoard();
+
+        // Simulate a few moves
+        console.log("Revealing cells:");
+        revealCell(0, 0);
+        renderBoard();
+        revealCell(1, 1);
+        renderBoard();
     </script>
 </body>
 </html>
